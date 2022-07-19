@@ -1,0 +1,8 @@
+{
+  "app_name": "My-Plannner",
+  "debug_name": "planner",
+  "api": {
+    "server": "localhost",
+    "port": 5000
+  }
+}
