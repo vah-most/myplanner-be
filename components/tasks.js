@@ -6,58 +6,40 @@
  * License: MIT "https://opensource.org/licenses/MIT"
  */
 
-const fakeTasks = [
-  {
-    id: 1,
-    title: "Task1",
-    deadline: "2022-06-27 12:00:00",
-    isCompleted: false,
-    desc: "Desc1 is a quite long task description...",
-    groups: [],
-  },
-  {
-    id: 2,
-    title: "Task2",
-    deadline: "",
-    isCompleted: true,
-    desc: "Desc2 is a quite long task description...",
-    groups: ["Group1"],
-  },
-  {
-    id: 3,
-    title: "Task3",
-    deadline: "2022-06-28 12:00:00",
-    isCompleted: false,
-    desc: "Desc3 is a quite long task description...",
-    groups: ["Group1", "Group2", "Group3", "Group4", "Group5"],
-  },
-  {
-    id: 4,
-    title: "Task4",
-    deadline: "",
-    isCompleted: true,
-    desc: "",
-    groups: ["Group3"],
-  },
-  {
-    id: 5,
-    title: "Task5",
-    deadline: "2022-07-05 12:00:00",
-    isCompleted: false,
-    desc: "Desc5 is a quite long task description...",
-    groups: ["Group3"],
-  },
-];
+const debug = require("../debug")("tasks");
+const MongoManager = require("../db/db");
+
+const tasksDbSchema = {
+  title: { type: String },
+  deadline: { type: Date },
+  isCompleted: { type: Boolean, default: false },
+  desc: { type: String, default: "" },
+  groups: { type: [String], default: [] },
+};
 
 class TaskManager {
+  dbCollectionName = "tasks";
+  dbManager = null;
+
   constructor() {
     this.tasks = [];
+    this.init();
+  }
+
+  async init() {
+    this.dbManager = new MongoManager();
+    await this.dbManager.connect();
+    if (this.dbManager.getIsConnected() === false) return; //TODO: handle ERROR
+    this.dbManager.setModel(this.dbCollectionName, tasksDbSchema);
+
     this.reloadTasks();
   }
 
-  reloadTasks() {
-    //TODO: load tasks from DB
-    this.tasks = fakeTasks;
+  async reloadTasks() {
+    if (this.dbManager.getIsConnected() === false) return []; //TODO: handle ERROR
+
+    const tasks = await this.dbManager.select({});
+    this.tasks = tasks ? tasks : [];
   }
 
   async getTasks() {
@@ -68,11 +50,17 @@ class TaskManager {
     return this.tasks.find((t) => t.id === id);
   }
 
-  setTasks(tasks) {
+  async setTasks(tasks) {
     this.tasks = tasks;
+
+    if (this.dbManager.getIsConnected() === false) return; //TODO: handle ERROR
+    let result;
+    result = await this.dbManager.delete({});
+    debug("Removed existing Tasks from DB: ", result);
+    result = await this.dbManager.insert(this.tasks);
+    debug("Stored Tasks in DB: ", result);
   }
 }
 
 const taskManager = new TaskManager();
-
 module.exports = taskManager;

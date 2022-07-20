@@ -4,5 +4,11 @@
   "api": {
     "server": "localhost",
     "port": 5000
+  },
+  "db": {
+    "name": "planner",
+    "protocol": "mongodb",
+    "server": "localhost",
+    "port": 27017
   }
 }
