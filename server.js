@@ -37,8 +37,9 @@ class ServerManager {
     this.app.use("/api/tasks", tasksRouter);
   }
   start() {
-    this.app.listen(config.get("api.port"), () => {
-      debug(`Listening to port ${config.get("api.port")}`);
+    const port = process.env.PORT || config.get("api.port");
+    this.app.listen(port, () => {
+      debug(`Listening to port ${port}`);
     });
   }
 }
