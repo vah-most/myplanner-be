@@ -9,6 +9,7 @@
 const config = require("config");
 const express = require("express");
 const helmet = require("helmet");
+const compression = require("compression");
 
 const debug = require("./debug")("server");
 const cors = require("./middlewares/cors");
@@ -28,6 +29,7 @@ class ServerManager {
     debug(`${config.app_name} Server started...`);
 
     this.app.use(helmet());
+    this.app.use(compression());
     this.app.use(express.json());
 
     this.app.use(cors);
