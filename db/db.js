@@ -17,9 +17,11 @@ class MongoManager {
   model = null;
 
   constructor() {
-    this.serverAddress = `${config.get("db.protocol")}://${config.get(
-      "db.server"
-    )}:${config.get("db.port")}/${config.get("db.name")}`;
+    this.serverAddress =
+      process.env.MONGODB_URI ||
+      `${config.get("db.protocol")}://${config.get("db.server")}:${config.get(
+        "db.port"
+      )}/${config.get("db.name")}`;
   }
 
   getIsConnected() {
