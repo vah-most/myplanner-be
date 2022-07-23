@@ -15,17 +15,30 @@ const cors = require("./middlewares/cors");
 const tasksRouter = require("./routes/tasks");
 const authRouter = require("./routes/auth");
 
-const app = express();
+class ServerManager {
+  app = null;
 
-debug(`${config.app_name} Server started...`);
+  constructor() {
+    this.init();
+  }
 
-app.use(helmet());
-app.use(express.json());
+  init() {
+    this.app = express();
 
-app.use(cors);
-app.use("/api/auth", authRouter);
-app.use("/api/tasks", tasksRouter);
+    debug(`${config.app_name} Server started...`);
 
-app.listen(config.get("api.port"), () => {
-  debug(`Listening to port ${config.get("api.port")}`);
-});
+    this.app.use(helmet());
+    this.app.use(express.json());
+
+    this.app.use(cors);
+    this.app.use("/api/auth", authRouter);
+    this.app.use("/api/tasks", tasksRouter);
+  }
+  start() {
+    this.app.listen(config.get("api.port"), () => {
+      debug(`Listening to port ${config.get("api.port")}`);
+    });
+  }
+}
+
+module.exports = ServerManager;
