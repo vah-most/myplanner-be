@@ -10,6 +10,7 @@ module.exports = {
   SUCCESS: 200,
   BAD_REQUEST: 400,
   NOT_FOUND: 404,
+  ACCESS_DENIED: 440,
 };
 
 module.exports.errorMessageInvalid = function (name) {
@@ -18,4 +19,8 @@ module.exports.errorMessageInvalid = function (name) {
 
 module.exports.errorMessageNotFound = function (name) {
   return `${name} Not Found.`;
+};
+
+module.exports.errorMessageAccessDenied = function () {
+  return `Access Denied!`;
 };

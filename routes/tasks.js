@@ -11,16 +11,17 @@ const router = express.Router();
 
 const debug = require("../debug")("router-tasks");
 const taskManager = require("../components/tasks");
+const authenticate = require("../middlewares/authenticate");
 const CODES = require("./codes");
 
-router.get("/", async (req, res) => {
+router.get("/", [authenticate], async (req, res) => {
   const tasks = await taskManager.getTasks();
 
   debug("Tasks: ", tasks);
   res.status(CODES.SUCCESS).send(tasks);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", [authenticate], async (req, res) => {
   const id = req.params.id;
   debug("Received ID:", id);
   if (!id || isNaN(id)) {
@@ -38,7 +39,7 @@ router.get("/:id", async (req, res) => {
   res.status(CODES.SUCCESS).send(task);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", [authenticate], async (req, res) => {
   const tasks = req.body.tasks;
   debug("Received Tasks:", req.body, typeof tasks);
   if (typeof tasks !== "object") {

@@ -10,5 +10,6 @@
     "protocol": "mongodb",
     "server": "localhost",
     "port": 27017
-  }
+  },
+  "token_key": "du2iuS429us0912189eDSFWww1m3kl"
 }

@@ -31,8 +31,6 @@ class TaskManager {
     await this.dbManager.connect();
     if (this.dbManager.getIsConnected() === false) return; //TODO: handle ERROR
     this.dbManager.setModel(this.dbCollectionName, tasksDbSchema);
-
-    this.reloadTasks();
   }
 
   async reloadTasks() {
@@ -43,6 +41,7 @@ class TaskManager {
   }
 
   async getTasks() {
+    await this.reloadTasks();
     return this.tasks;
   }
 
